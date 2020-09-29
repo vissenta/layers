@@ -1,12 +1,39 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
-import store from './store'
+import makeStore from './store'
+import VueTailwind from 'vue-tailwind'
+
+import VueTailwindSettings from './settings'
 
 Vue.config.productionTip = false
 
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+;(async () => {
+  let { search } = window.location
+
+  let isWorkbench = false
+  if (search.length > 0) {
+    /* eslint-disable-next-line */
+    search = search.replace('?', '').split('&').reduce((a, c) => (c = c.split('='), a[c[0]] = c[1], a), {})
+    isWorkbench = Object.keys(search).includes('workbench')
+  }
+
+  const appName = isWorkbench ? 'workbench' : 'builder'
+
+  if (!isWorkbench) {
+    Vue.use(VueTailwind, VueTailwindSettings)
+  }
+
+  console.log('run app ' + appName)
+
+  const store = await makeStore(appName)
+
+  import('@/utils/message') /* eslint-disable-line no-unused-expressions */
+
+  console.log(Vue)
+  new Vue({
+    router,
+    store,
+    render: h => h(App)
+  }).$mount('#app')
+})()

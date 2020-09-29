@@ -1,32 +1,35 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <component v-if="application" :is="application" />
+    <template v-else>
+      LOADING
+    </template>
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+export default {
+  name: 'MainFrame',
 
-#nav {
-  padding: 30px;
+  components: {
+    builder: () => import('@/components/Builder'),
+    workbench: () => import('@/components/Workbench')
+  },
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
+  data () {
+    return {
+      application: null
+    }
+  },
 
-    &.router-link-exact-active {
-      color: #42b983;
+  mounted () {
+    const { query } = this.$route
+
+    if (Object.keys(query).includes('workbench')) {
+      this.application = 'workbench'
+    } else {
+      this.application = 'builder'
     }
   }
 }
-</style>
+</script>

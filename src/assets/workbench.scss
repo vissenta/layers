@@ -1,0 +1,109 @@
+@import 'variables';
+
+.#{$classPrefix} {
+
+    &-column {
+        &--empty {
+            min-height: 10rem;
+            display: flex;
+            border: 1px dashed rgba(74, 85, 104, 0.25);
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: rgba(74, 85, 104, 0.5);
+            cursor: default;
+
+            .#{$classPrefix}-drag-element {
+                width: 100%;
+                align-self: stretch;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    }
+
+    &-drag-element {
+        margin-top: -1px;
+        margin-bottom: -1px;
+        padding-top: 1px;
+        padding-bottom: 1px;
+    }
+
+    
+
+    &-ghost {
+        background-color: rgba(0,100,240, 0.25);
+        height: 10px;
+        border-radius: 5px;
+        pointer-events: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &::before, &::after {
+            position: absolute;
+            width: 100%;
+            left: 0;
+            line-height: 14px;
+            height: 0;
+            overflow: hidden;
+            text-align: center;
+            font-size: 9px;
+            text-transform: uppercase;
+            background-color: rgba(0,100,240, 0.75);
+            color: #fff;
+
+            transition: height .2s;
+        }
+
+        &::before {
+            content: 'Move above';
+            bottom: 100%;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        &::after {
+            content: 'Move below';
+            top: 100%;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+
+        &-icon {
+            display: inline-block;
+            border-radius: 50%;
+            padding: 5px;
+            background-color: rgba(0,100,240, 0.75);
+            svg {
+                transition: transform 0.2s ease;
+                color: #fff;
+                width: 24px;
+                height: 24px;
+            }
+        }
+
+        &--to-top {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+        &--to-bottom {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        &--to-bottom &-icon svg {
+            transform: rotate(180deg);
+        }
+
+        &--to-top::before,
+        &--to-bottom::after {
+            height: 14px;
+        }
+    }
+}
+
+.is-over:not(.root) > .#{$classPrefix}-drag-element > * {
+    pointer-events: none;
+}
