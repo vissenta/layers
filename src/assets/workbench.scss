@@ -32,10 +32,10 @@
         padding-bottom: 1px;
     }
 
-    
+
 
     &-ghost {
-        background-color: rgba(0,100,240, 0.25);
+        background-color: rgba(0, 100, 240, 0.25);
         height: 10px;
         border-radius: 5px;
         pointer-events: none;
@@ -43,7 +43,9 @@
         align-items: center;
         justify-content: center;
 
-        &::before, &::after {
+
+        &::before,
+        &::after {
             position: absolute;
             width: 100%;
             left: 0;
@@ -53,7 +55,7 @@
             text-align: center;
             font-size: 9px;
             text-transform: uppercase;
-            background-color: rgba(0,100,240, 0.75);
+            background-color: rgba(0, 100, 240, 0.75);
             color: #fff;
 
             transition: height .2s;
@@ -65,6 +67,7 @@
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
         }
+
         &::after {
             content: 'Move below';
             top: 100%;
@@ -72,11 +75,25 @@
             border-bottom-right-radius: 5px;
         }
 
+
+        &-text {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 5px;
+            background-color: rgba(0, 100, 240, 0.75);
+            color: #fff;
+        }
+
+        &:not(#{&}--empty) &-text {
+            display: none;
+        }
+
         &-icon {
             display: inline-block;
             border-radius: 50%;
             padding: 5px;
-            background-color: rgba(0,100,240, 0.75);
+            background-color: rgba(0, 100, 240, 0.75);
+
             svg {
                 transition: transform 0.2s ease;
                 color: #fff;
@@ -85,14 +102,20 @@
             }
         }
 
+        &--empty &-icon {
+            display: none;
+        }
+
         &--to-top {
             border-top-left-radius: 0;
             border-top-right-radius: 0;
         }
+
         &--to-bottom {
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
         }
+
         &--to-bottom &-icon svg {
             transform: rotate(180deg);
         }
@@ -104,6 +127,6 @@
     }
 }
 
-.is-over:not(.root) > .#{$classPrefix}-drag-element > * {
+.is-over:not(.root)>.#{$classPrefix}-drag-element>* {
     pointer-events: none;
 }

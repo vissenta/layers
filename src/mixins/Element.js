@@ -138,7 +138,13 @@ export default {
         return this.insertGhost(ref, onTop)
       }
 
-      const { onTop, element } = getDimensionsData(event)
+      let { onTop, element } = getDimensionsData(event)
+
+      if (target.classList.contains('layers-drag-element--empty')) {
+        onTop = undefined
+      }
+
+      console.log({ onTop })
 
       this.insertGhost(element, onTop)
       this.lastOnTop = onTop
@@ -149,11 +155,14 @@ export default {
       this.removeGhost()
     },
 
-    insertGhost (ref, onTop = true) {
+    insertGhost (ref, onTop) {
       if (this._isInserting) return
       let el = this.ghost
       this._isInserting = true
 
+      const empty = typeof onTop === 'undefined'
+
+      console.log({ empty, onTop })
       const tag = this.$options._componentTag
 
       if (!el) {
@@ -167,9 +176,20 @@ export default {
         <path fill="currentColor" d="M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z" />
     </svg>`)
 
+        const emptyText = document.createElement('span')
+        emptyText.className = 'layers-ghost-text'
+        emptyText.textContent = 'Insert here'
+
         el.appendChild(svgEl)
+        el.appendChild(emptyText)
 
         document.body.appendChild(el)
+      }
+
+      if (empty) {
+        el.classList.add('layers-ghost--empty')
+      } else {
+        el.classList.remove('layers-ghost--empty')
       }
 
       const position = {
@@ -183,7 +203,9 @@ export default {
       Object.assign(el.style, position)
 
       el.classList.remove('layers-ghost--to-top', 'layers-ghost--to-bottom')
-      el.classList.add(`layers-ghost--to-${onTop ? 'top' : 'bottom'}`)
+      if (!empty) {
+        el.classList.add(`layers-ghost--to-${onTop ? 'top' : 'bottom'}`)
+      }
 
       if (!this.ghost) {
         console.log('insert ghost')
