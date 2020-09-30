@@ -31,7 +31,7 @@ export default {
       this.$emit('drag', event)
     },
     handleDragStart (event) {
-      event.dataTransfer.dropEffect = 'copy'
+      event.dataTransfer.dropEffect = this.dropEffect
       event.dataTransfer.setData('text/plain', JSON.stringify(this.dataTransfer))
       event.dataTransfer.setDragImage(event.target, 0, 0)
       this.$emit('dragstart', { dataTransfer: this.dataTransfer, event })

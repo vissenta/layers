@@ -71,9 +71,8 @@ export default {
       this.$events.$emit('message:dataTransfer', { data: dataTransfer })
     },
     handleDragEnter (event) {
+      event.stopPropagation()
       if (event.target.nodeType === 3) return
-
-      console.log('workbench::dragEnter', { event })
 
       if (this.dataTransfer.component?.id && (event.target.id === this.dataTransfer.component.id)) {
         return
@@ -85,7 +84,7 @@ export default {
       this.lastOnTop = onTop
     },
     handleDragLeave (event) {
-      console.log('workbench::dragLeave', { event })
+      if (event.target.nodeType === 3) return
 
       let removeGhost = true
       let related = event.relatedTarget
@@ -104,7 +103,12 @@ export default {
 
       const dataTransfer = this.dataTransfer
 
-      const { target } = event
+      let { target } = event
+
+      if (!target.classList.contains('layers-drag-element')) {
+        target = target.closest('.layers-drag-element')
+      }
+
       if (dataTransfer.component?.id && (target.id === dataTransfer.component.id)) {
         const { component: { id }, list } = dataTransfer
         const index = list.findIndex(item => item.id === id)
@@ -144,8 +148,6 @@ export default {
         onTop = undefined
       }
 
-      console.log({ onTop })
-
       this.insertGhost(element, onTop)
       this.lastOnTop = onTop
     },
@@ -162,7 +164,6 @@ export default {
 
       const empty = typeof onTop === 'undefined'
 
-      console.log({ empty, onTop })
       const tag = this.$options._componentTag
 
       if (!el) {
@@ -195,7 +196,7 @@ export default {
       const position = {
         position: 'fixed',
         top: (ref.offsetTop - window.pageYOffset) + 'px',
-        left: ref.offsetLeft + 'px',
+        left: (ref.offsetLeft - window.pageXOffset) + 'px',
         width: ref.clientWidth + 'px',
         height: ref.clientHeight + 'px'
       }
