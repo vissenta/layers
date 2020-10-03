@@ -18,10 +18,12 @@ const getDimensionsData = (event) => {
     return
   }
 
+  const rect = element.getBoundingClientRect()
+
   const {
-    offsetTop,
-    clientHeight
-  } = element
+    top,
+    height
+  } = rect
   const {
     clientY
   } = event
@@ -29,8 +31,8 @@ const getDimensionsData = (event) => {
     pageYOffset
   } = window
 
-  const elementTop = offsetTop - pageYOffset
-  const onTop = (clientY - elementTop) < (clientHeight / 2)
+  const elementTop = top - pageYOffset
+  const onTop = (clientY - elementTop) < (height / 2)
 
   return {
     element,
@@ -74,7 +76,7 @@ export default {
       event.stopPropagation()
       if (event.target.nodeType === 3) return
 
-      if (this.dataTransfer.component?.id && (event.target.id === this.dataTransfer.component.id)) {
+      if (!event.target.id || (this.dataTransfer.component?.id && (event.target.id === this.dataTransfer.component.id))) {
         return
       }
 
@@ -84,10 +86,10 @@ export default {
       this.lastOnTop = onTop
     },
     handleDragLeave (event) {
-      if (event.target.nodeType === 3) return
+      if (event.target.nodeType === 3 || !event.target.id) return
 
       let removeGhost = true
-      let related = event.relatedTarget
+      let related = (event.relatedTarget || event.toElement)
       if (related && related.nodeType === 3) {
         related = related.parentNode
       }
@@ -196,10 +198,12 @@ export default {
         el.classList.remove('layers-ghost--empty')
       }
 
+      const refRect = ref.getBoundingClientRect()
+
       const position = {
         position: 'fixed',
-        top: (ref.offsetTop - window.pageYOffset) + 'px',
-        left: (ref.offsetLeft - window.pageXOffset) + 'px',
+        top: (refRect.top - window.pageYOffset) + 'px',
+        left: (refRect.left - window.pageXOffset) + 'px',
         width: ref.clientWidth + 'px',
         height: ref.clientHeight + 'px'
       }
