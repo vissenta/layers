@@ -1,8 +1,10 @@
 <template>
-  <component :is="tag" :class="[sizeClass]">
-    <a :href="url" v-if="url.length > 0">{{ text }}</a>
-    <template v-else>{{ text }}</template>
-  </component>
+  <workbench-item type="item" :component="component">
+    <component :is="tag" :class="[sizeClass]">
+      <a :href="url" v-if="url.length > 0">{{ text }}</a>
+      <template v-else>{{ text }}</template>
+    </component>
+  </workbench-item>
 </template>
 
 <script>

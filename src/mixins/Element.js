@@ -133,7 +133,6 @@ export default {
           } else {
             ref = list[index + 1]
           }
-          console.log({ ref })
           onTop = !data.onTop
         }
 
@@ -155,6 +154,10 @@ export default {
       console.log('workbench::drop', { dataTransfer, event })
 
       this.removeGhost()
+      this.$events.$emit('message:dataTransfer', { data: {} })
+    },
+    handleDragEnd () {
+      this.$events.$emit('message:dataTransfer', { data: {} })
     },
 
     insertGhost (ref, onTop) {

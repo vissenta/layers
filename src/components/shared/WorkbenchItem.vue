@@ -13,9 +13,13 @@ export default {
       type: String,
       validator: value => validTypes.includes(value),
       default: 'item'
+    },
+    component: {
+      type: String,
+      required: true
     }
   },
-  render (h, { data, props, scopedSlots }) {
+  render (h, { data, props, scopedSlots, parent }) {
     const toolbox = h('div', {
       staticClass: 'layers-item-toolbox'
     })
@@ -25,10 +29,14 @@ export default {
       staticClass.push(...data.staticClass.split(' '))
     }
 
+    const name = h('div', {
+      staticClass: 'layers-item-name'
+    }, [props.component])
+
     return h(props.tag, {
       staticClass: staticClass.join(' '),
       class: data.class
-    }, [toolbox, scopedSlots.default()])
+    }, [scopedSlots.default(), toolbox, name])
   }
 }
 </script>

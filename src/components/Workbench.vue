@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @mouseover="handleMouseOver" @mouseleave="handleMouseLeave">
     <template v-for="component in page">
       <component :is="component.component" :key="component.id" v-bind="component" />
     </template>
@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import _debounce from 'lodash.debounce'
 import { components } from '@/components/shared/elements'
 
 const uikitUrl = 'https://cdn.jsdelivr.net/npm/uikit@3.5.7/dist/'
@@ -37,6 +38,7 @@ export default {
 
   data () {
     return {
+      currentTarget: null,
       page: [
         {
           id: 'asdas',
@@ -84,12 +86,53 @@ export default {
     }
   },
 
+  computed: {
+    dataTransfer () {
+      return this.$store.getters.dataTransfer
+    }
+  },
+
+  watch: {
+    dataTransfer (value) {
+      if (Object.keys(value).length > 0) {
+        this.currentTarget = null
+        this.handleTargetChange()
+      }
+    }
+  },
+
   created () {
     this.$events.$on('message:dataTransfer', ({ data }) => this.$store.commit('setDataTransfer', data))
   },
 
   beforeDestroy () {
     this.$events.$off('message:dataTransfer')
+  },
+
+  methods: {
+    handleMouseOver: _debounce(function (event) {
+      if (Object.keys(this.dataTransfer).length > 0) return
+
+      const element = event.target.classList.contains('layers-item') ? event.target : event.target.closest('.layers-item')
+      this.currentTarget = element || null
+
+      this.handleTargetChange()
+    }, 50),
+    handleMouseLeave (event) {
+      this.currentTarget = null
+      this.handleTargetChange()
+    },
+
+    handleTargetChange () {
+      const previousTarget = document.querySelector('.layers-item.layers-item--hover')
+      const { currentTarget } = this
+
+      if (previousTarget && (previousTarget !== currentTarget)) {
+        previousTarget.classList.remove('layers-item--hover')
+      }
+
+      currentTarget && currentTarget.classList.add('layers-item--hover')
+    }
   }
 
 }

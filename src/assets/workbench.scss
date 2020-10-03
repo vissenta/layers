@@ -125,6 +125,45 @@
             height: 14px;
         }
     }
+
+    &-item {
+        position: relative;
+        border: 2px dashed transparent;
+        box-sizing: padding-box;
+
+        &-name {
+            position: absolute;
+            left: -2px;
+            top: -2px;
+            padding: 3px 10px;
+            color: #fff;
+            font-size: 14px;
+            opacity: 0;
+        }
+
+        &--hover > &-name {
+            opacity: 1;
+        }
+
+        &-toolbox {
+
+        }
+        &--container &-name,
+        &--container &-toolbox {
+            background-color: #53CBB1;
+        }
+        &--item &-name,
+        &--item &-toolbox {
+            background-color: #576372;
+        }
+
+        &--hover#{&}--container {
+            border-color: #53CBB1;
+        }
+        &--hover#{&}--item {
+            border-color: #576372;
+        }
+    }
 }
 
 .is-over:not(.root)>.#{$classPrefix}-drag-element>* {

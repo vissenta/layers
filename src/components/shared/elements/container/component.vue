@@ -1,5 +1,5 @@
 <template>
-  <workbench-item class="uk-container" :class="[sizeClass]" type="container">
+  <workbench-item class="uk-container" :class="[sizeClass]" type="container" :component="component">
       <drop class="layers-drop-area root" @drop="handleDrop" ref="dropElement" @dragleave="handleDragLeave"
         @dragover="handleDragOver" @dragenter="handleDragEnter">
         <div class="layers-drag-element" v-for="(component, index) in children" :key="component.id" :ref="`item${index}`">

@@ -2,7 +2,7 @@
   <drop @drop="handleDrop" ref="dropElement" class="uk-grid-cell layers-drop-area"
     @dragover="handleDragOver" @dragleave="handleDragLeave" @dragenter="handleDragEnter">
     <template v-if="children.length">
-      <drag @dragstart="handleDragStart" @drag="handleDrag" @dragend="handleDragEnd"
+      <drag @dragstart="handleDragStart" @dragend="handleDragEnd"
         :ref="`item${index}`" :data-transfer="{ component, list: children }" :id="component.id"
         tag="div" class="layers-drag-element" :data-index="index" v-for="(component, index) in children" :key="component.id" >
         <component :is="component.component" v-bind="component" class="layers-element" />
@@ -39,15 +39,6 @@ export default {
     return {
       standalone: false,
       notAllowed: ['Section']
-    }
-  },
-
-  methods: {
-    handleDrag (e) {
-
-    },
-    handleDragEnd (e) {
-      console.log('workbench::dragEnd', { e })
     }
   }
 }

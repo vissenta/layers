@@ -7,6 +7,7 @@
         <span class="block text-sm uppercase mb-2 font-medium text-gray-700">{{ groupKey }}</span>
         <ul class="grid grid-cols-2 gap-2 pb-2">
           <drag v-for="element in group" :key="element.name.toLowerCase()" :data-transfer="element" @dragstart="handleDragStart"
+            @dragend="handleDragEnd"
             class="bg-white flex flex-col h-24 justify-center items-center hover:shadow-md cursor-move hover:text-indigo-400">
             <icon :path="element.icon" v-if="element.icon" :size="2" />
             <span class="text-sm mt-1">{{ element.name }}</span>
@@ -62,6 +63,10 @@ export default {
     handleDragStart ({ dataTransfer }) {
       console.log('dragStart', { dataTransfer })
       this.$message.sendNotification('dataTransfer', dataTransfer)
+    },
+    handleDragEnd () {
+      console.log('drag end')
+      this.$message.sendNotification('dataTransfer', {})
     }
   }
 }
