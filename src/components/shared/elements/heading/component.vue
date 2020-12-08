@@ -1,5 +1,6 @@
 <template>
   <workbench-item type="item" :component="component">
+    {{ tag }}
     <component :is="tag" :class="[sizeClass]">
       <a :href="url" v-if="url.length > 0">{{ text }}</a>
       <template v-else>{{ text }}</template>
@@ -22,7 +23,7 @@ export default {
     },
     text: {
       type: String,
-      default: ''
+      default: 'Brand new heading'
     },
     url: {
       type: String,

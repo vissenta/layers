@@ -1,3 +1,5 @@
+import { dataTransfer } from '@/store/workbench'
+
 let _isInserting = false
 export let ghost = null
 
@@ -9,6 +11,11 @@ export function insertGhost (ref, onTop) {
   const empty = typeof onTop === 'undefined'
 
   // const tag = this.$options._componentTag
+
+  let helpText = 'Insert'
+  if (dataTransfer?.data?.component?.id) {
+    helpText = 'Move'
+  }
 
   if (!el) {
     el = document.createElement('div')
@@ -23,13 +30,14 @@ export function insertGhost (ref, onTop) {
 
     const emptyText = document.createElement('span')
     emptyText.className = 'layers-ghost-text'
-    emptyText.textContent = 'Insert here'
+    emptyText.textContent = helpText + ' here'
 
     el.appendChild(svgEl)
     el.appendChild(emptyText)
 
     document.body.appendChild(el)
   }
+  el.dataset.text = helpText
 
   if (empty) {
     el.classList.add('layers-ghost--empty')
@@ -72,7 +80,7 @@ export function removeGhost () {
 export function getDimensionsData (event) {
   let element = event.target
 
-  if (element.nodeType === 3) {
+  if (element.nodeType === 3) { // Text Node
     element = element.parentNode
   }
 

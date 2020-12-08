@@ -11,12 +11,6 @@
           </template>
         </div>
       </b-tab>
-
-      <!--template-- #tabs-end v-if="showLanguagePicker">
-        <li class="nav-item ml-auto align-self-center form-generator__tab form-generator__tab--last">
-          Język: &nbsp; <b-select size="sm" :options="languages" v-model="currentLanguage" />
-        </li>
-      </!--template-->
     </b-tabs>
   </div>
 </template>

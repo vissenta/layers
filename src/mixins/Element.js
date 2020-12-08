@@ -1,6 +1,8 @@
-import { mapGetters } from 'vuex'
 import { components } from '@/components/shared/elements'
 import { insertGhost, removeGhost, getDimensionsData } from '@/utils/ghost'
+import { dataTransfer } from '@/store/workbench'
+
+console.log({ dataTransfer })
 
 export default {
   components: {
@@ -24,12 +26,13 @@ export default {
       _isInserting: false,
 
       ghost: null,
-      lastOnTop: null,
       current: null
     }
   },
 
-  computed: mapGetters(['dataTransfer']),
+  computed: {
+    dataTransfer: () => dataTransfer.data
+  },
 
   methods: {
     handleDragStart ({ dataTransfer }) {
@@ -46,7 +49,6 @@ export default {
       const { onTop, element } = getDimensionsData(event)
 
       insertGhost(element, onTop)
-      this.lastOnTop = onTop
     },
     handleDragLeave (event) {
       const { target } = event
@@ -82,6 +84,10 @@ export default {
         target = target.closest('.layers-drag-element')
       }
 
+      if (!target) {
+        return
+      }
+
       if (dataTransfer.component?.id && (target.id === dataTransfer.component.id)) {
         const { component: { id }, list } = dataTransfer
         const index = list.findIndex(item => item.id === id)
@@ -114,91 +120,31 @@ export default {
         return insertGhost(ref, onTop)
       }
 
-      let { onTop, element } = getDimensionsData(event)
+      const a = getDimensionsData(event)
+      let { onTop, element } = a
 
       if (target.classList.contains('layers-drag-element--empty')) {
         onTop = undefined
       }
 
       insertGhost(element, onTop)
-      this.lastOnTop = onTop
     },
     handleDrop ({ dataTransfer, event }) {
-      console.log('workbench::drop', { dataTransfer, event })
+      const { onTop, element } = getDimensionsData(event)
+      console.log('workbench::drop', { dataTransfer, event, onTop, id: element.id })
+
+      if (dataTransfer?.data?.component?.id) {
+        this.$events.$emit('move', { id: dataTransfer.data.component.id, onTop, target: element.id })
+      } else {
+        this.$events.$emit('insert', { data: dataTransfer, onTop, target: element.id })
+      }
 
       removeGhost()
       this.$events.$emit('message:dataTransfer', { data: {} })
     },
     handleDragEnd () {
+      removeGhost()
       this.$events.$emit('message:dataTransfer', { data: {} })
     }
-
-    // insertGhost (ref, onTop) {
-    //   if (this._isInserting) return
-    //   let el = this.ghost
-    //   this._isInserting = true
-
-    //   const empty = typeof onTop === 'undefined'
-
-    //   const tag = this.$options._componentTag
-
-    //   if (!el) {
-    //     el = document.createElement('div')
-    //     el.className = 'layers-ghost'
-    //     el.dataset.tag = tag
-
-    //     const svgEl = document.createElement('div')
-    //     svgEl.className = 'layers-ghost-icon'
-    //     svgEl.insertAdjacentHTML('afterbegin', `<svg style="width:24px;height:24px" viewBox="0 0 24 24">
-    //     <path fill="currentColor" d="M13,20H11V8L5.5,13.5L4.08,12.08L12,4.16L19.92,12.08L18.5,13.5L13,8V20Z" />
-    // </svg>`)
-
-    //     const emptyText = document.createElement('span')
-    //     emptyText.className = 'layers-ghost-text'
-    //     emptyText.textContent = 'Insert here'
-
-    //     el.appendChild(svgEl)
-    //     el.appendChild(emptyText)
-
-    //     document.body.appendChild(el)
-    //   }
-
-    //   if (empty) {
-    //     el.classList.add('layers-ghost--empty')
-    //   } else {
-    //     el.classList.remove('layers-ghost--empty')
-    //   }
-
-    //   const refRect = ref.getBoundingClientRect()
-
-    //   const position = {
-    //     position: 'fixed',
-    //     top: (refRect.top - window.pageYOffset) + 'px',
-    //     left: (refRect.left - window.pageXOffset) + 'px',
-    //     width: ref.clientWidth + 'px',
-    //     height: ref.clientHeight + 'px'
-    //   }
-
-    //   Object.assign(el.style, position)
-
-    //   el.classList.remove('layers-ghost--to-top', 'layers-ghost--to-bottom')
-    //   if (!empty) {
-    //     el.classList.add(`layers-ghost--to-${onTop ? 'top' : 'bottom'}`)
-    //   }
-
-    //   if (!this.ghost) {
-    //     console.log('insert ghost')
-    //     this.ghost = el
-    //   }
-    //   this._isInserting = false
-    // },
-
-    // removeGhost () {
-    //   if (this.ghost !== null) {
-    //     console.log('remove ghost')
-    //     this.ghost.remove()
-    //     this.ghost = null
-    //   }
-    // }
   }
 }

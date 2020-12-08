@@ -43,6 +43,8 @@
         align-items: center;
         justify-content: center;
 
+        transition: top .2s, left .2s, width .2s, height .2s;
+
 
         &::before,
         &::after {
@@ -62,14 +64,14 @@
         }
 
         &::before {
-            content: 'Move above';
+            content: attr(data-text) ' above';
             bottom: 100%;
             border-top-left-radius: 5px;
             border-top-right-radius: 5px;
         }
 
         &::after {
-            content: 'Move below';
+            content: attr(data-text) ' below';
             top: 100%;
             border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;

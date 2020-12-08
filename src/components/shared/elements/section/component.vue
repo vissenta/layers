@@ -1,8 +1,6 @@
 <template>
   <section class="uk-section">
-    <template v-for="component in children">
-      <component :is="component.component" :key="component.id" v-bind="component" />
-    </template>
+    <slot v-for="component in children" v-bind="component" name="default" />
   </section>
 </template>
 
