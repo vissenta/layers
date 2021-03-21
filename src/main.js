@@ -2,9 +2,6 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import makeStore from './store'
-import VueTailwind from 'vue-tailwind'
-
-import VueTailwindSettings from './settings'
 
 Vue.config.productionTip = false
 
@@ -21,6 +18,8 @@ Vue.config.productionTip = false
   const appName = isWorkbench ? 'workbench' : 'builder'
 
   if (!isWorkbench) {
+    const VueTailwind = await import('vue-tailwind')
+    const VueTailwindSettings = await import('./settings')
     Vue.use(VueTailwind, VueTailwindSettings)
   }
 
